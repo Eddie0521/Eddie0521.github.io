@@ -7,7 +7,10 @@
     "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
-    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check"
+    "check": "ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "likes:deploy": "wrangler deploy --config like-worker/wrangler.jsonc",
+    "likes:dev": "wrangler dev --config like-worker/wrangler.jsonc",
+    "likes:migrate": "wrangler d1 migrations apply eddie-site-likes --config like-worker/wrangler.jsonc --remote"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
@@ -18,6 +21,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "wrangler": "^4.90.1"
   }
 }

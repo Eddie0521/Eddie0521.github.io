@@ -832,6 +832,12 @@ h2 {
   transform: translateY(-1px);
 }
 
+.footer-like__button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
 .footer-like__button:focus-visible {
   outline: 2px solid rgba(32, 36, 33, 0.32);
   outline-offset: 2px;
@@ -844,6 +850,10 @@ h2 {
 
 .footer-like[data-liked="true"] .footer-like__button svg {
   fill: currentColor;
+}
+
+.footer-like[data-error="true"] .footer-like__button {
+  border-color: rgba(196, 64, 80, 0.24);
 }
 
 @media (max-width: 820px) {

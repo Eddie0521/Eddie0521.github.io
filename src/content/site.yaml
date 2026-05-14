@@ -7,6 +7,7 @@ site:
   role: ""
   avatar: "avatar.png"
   topbarIcon: "avatar-transparent.png"
+  likeApiUrl: "https://eddie-site-likes.eddie0521.workers.dev"
   intro:
     - "Pursuing an M.S. degree in the College of Control Science and Engineering at Zhejiang University since 2025."
     - "My research interest is in autoregressive long video generation, especially its application in World Model and Embodied AI."

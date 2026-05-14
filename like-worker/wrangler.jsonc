@@ -1,0 +1,15 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "eddie-site-likes",
+  "main": "src/index.js",
+  "compatibility_date": "2026-05-14",
+  "workers_dev": true,
+  "preview_urls": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "eddie-site-likes",
+      "database_id": "d5511eb9-eef4-44a2-8ab5-263bb9862f8c"
+    }
+  ]
+}

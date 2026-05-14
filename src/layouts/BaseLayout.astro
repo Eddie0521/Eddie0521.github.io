@@ -53,7 +53,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
             ))
           }
         </span>
-        <FooterLike />
+        <FooterLike apiUrl={site.likeApiUrl} />
       </footer>
     </div>
   </body>

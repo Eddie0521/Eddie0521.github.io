@@ -36,3 +36,5 @@ Build a fast, maintainable personal site inspired by the clarity of `zhangzjn.gi
 - The site must build as static files.
 - GitHub Pages deployment should work through GitHub Actions.
 - Local development should use standard npm scripts.
+- The shared footer like counter is served by `like-worker/` on Cloudflare Workers with D1 storage.
+- Do not store visitor personal data in the like counter. The frontend may store only an anonymous browser visitor id.

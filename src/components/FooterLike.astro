@@ -1,8 +1,15 @@
 ---
 import { Heart } from "@lucide/astro";
+
+type Props = {
+  apiUrl?: string;
+  targetId?: string;
+};
+
+const { apiUrl = "", targetId = "site" } = Astro.props;
 ---
 
-<span class="footer-like" data-footer-like>
+<span class="footer-like" data-footer-like data-like-api-url={apiUrl} data-like-target-id={targetId} hidden={!apiUrl}>
   <span class="footer-like__count" data-footer-like-count aria-live="polite">0</span>
   <button class="footer-like__button" type="button" aria-label="Like this site" aria-pressed="false" data-footer-like-button>
     <Heart aria-hidden="true" size={16} stroke-width={1.9} />
@@ -13,37 +20,117 @@ import { Heart } from "@lucide/astro";
   const likeRoot = document.querySelector<HTMLElement>("[data-footer-like]");
   const likeCount = likeRoot?.querySelector<HTMLElement>("[data-footer-like-count]");
   const likeButton = likeRoot?.querySelector<HTMLButtonElement>("[data-footer-like-button]");
-  const storageKey = "footer-like-state";
+  const apiUrl = likeRoot?.dataset.likeApiUrl?.replace(/\/$/, "") ?? "";
+  const targetId = likeRoot?.dataset.likeTargetId ?? "site";
+  const visitorKey = "footer-like-visitor-id";
+  const likedKey = `footer-like-liked:${targetId}`;
 
-  if (likeRoot && likeCount && likeButton) {
-    const parseState = () => {
+  if (likeRoot && likeCount && likeButton && apiUrl) {
+    const readStorage = (key: string) => {
       try {
-        const storedState = JSON.parse(window.localStorage.getItem(storageKey) ?? "{}");
-        return {
-          count: Number.isFinite(storedState.count) ? Math.max(0, storedState.count) : 0,
-          liked: Boolean(storedState.liked),
-        };
+        return window.localStorage.getItem(key);
       } catch {
-        return { count: 0, liked: false };
+        return null;
       }
+    };
+
+    const writeStorage = (key: string, value: string) => {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch {
+        // Storage can fail in restricted browsing modes. The remote counter still works.
+      }
+    };
+
+    const getVisitorId = () => {
+      const storedId = readStorage(visitorKey);
+
+      if (storedId) {
+        return storedId;
+      }
+
+      const visitorId =
+        window.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+      writeStorage(visitorKey, visitorId);
+      return visitorId;
     };
 
     const renderState = (state: { count: number; liked: boolean }) => {
       likeCount.textContent = String(state.count);
       likeButton.setAttribute("aria-pressed", String(state.liked));
+      likeButton.setAttribute("aria-label", state.liked ? "Remove like" : "Like this site");
       likeRoot.dataset.liked = String(state.liked);
     };
 
-    let state = parseState();
+    const setBusy = (busy: boolean) => {
+      likeRoot.setAttribute("aria-busy", String(busy));
+      likeButton.disabled = busy;
+    };
+
+    const normalizeState = (data: { count?: unknown; liked?: unknown }) => ({
+      count: Number.isFinite(data.count) ? Math.max(0, Number(data.count)) : 0,
+      liked: Boolean(data.liked),
+    });
+
+    const requestState = async (liked?: boolean) => {
+      const endpoint = `${apiUrl}/likes/${encodeURIComponent(targetId)}`;
+      const visitorId = getVisitorId();
+      const response =
+        typeof liked === "boolean"
+          ? await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ visitorId, liked }),
+            })
+          : await fetch(`${endpoint}?visitorId=${encodeURIComponent(visitorId)}`);
+
+      if (!response.ok) {
+        throw new Error(`Like API request failed with ${response.status}`);
+      }
+
+      return normalizeState(await response.json());
+    };
+
+    let state = { count: 0, liked: readStorage(likedKey) === "true" };
     renderState(state);
 
-    likeButton.addEventListener("click", () => {
-      state = {
+    setBusy(true);
+    requestState()
+      .then((nextState) => {
+        state = nextState;
+        writeStorage(likedKey, String(state.liked));
+        renderState(state);
+      })
+      .catch(() => {
+        likeRoot.dataset.error = "true";
+        likeButton.title = "Like count is temporarily unavailable";
+      })
+      .finally(() => setBusy(false));
+
+    likeButton.addEventListener("click", async () => {
+      const previousState = state;
+      const optimisticState = {
         liked: !state.liked,
         count: Math.max(0, state.count + (state.liked ? -1 : 1)),
       };
-      window.localStorage.setItem(storageKey, JSON.stringify(state));
+
+      state = optimisticState;
       renderState(state);
+
+      try {
+        setBusy(true);
+        state = await requestState(optimisticState.liked);
+        writeStorage(likedKey, String(state.liked));
+        delete likeRoot.dataset.error;
+        likeButton.removeAttribute("title");
+      } catch {
+        state = previousState;
+        likeRoot.dataset.error = "true";
+        likeButton.title = "Like count is temporarily unavailable";
+      } finally {
+        renderState(state);
+        setBusy(false);
+      }
     });
   }
 </script>

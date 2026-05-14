@@ -13,6 +13,7 @@ const site = defineCollection({
     role: z.string().default(""),
     avatar: z.string(),
     topbarIcon: z.string(),
+    likeApiUrl: z.url().optional(),
     intro: z.array(z.string()).default([]),
     navigation: z
       .array(

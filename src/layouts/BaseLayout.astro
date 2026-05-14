@@ -1,0 +1,58 @@
+---
+import { ExternalLink, Mail } from "@lucide/astro";
+import Header from "@/components/Header.astro";
+import GitHubIcon from "@/components/icons/GitHubIcon.astro";
+import "@/styles/global.css";
+import { getSiteConfig } from "@/lib/content-data";
+import { withBase } from "@/lib/url";
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const site = await getSiteConfig();
+const { title, description = site.description } = Astro.props;
+const pageTitle = title ? `${title} - ${site.name}` : `${site.name} - ${site.title}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={withBase(site.avatar)} type="image/png" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} RSS`} href={withBase("rss.xml")} />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <Header />
+      <main>
+        <slot />
+      </main>
+      <footer class="site-footer">
+        <span>{site.brand}</span>
+        <span class="footer-links">
+          {
+            site.socialLinks.map(({ label, href }) => (
+              <a href={withBase(href)} aria-label={label} title={label}>
+                {label === "GitHub" ? (
+                  <GitHubIcon size={18} />
+                ) : label === "Email" ? (
+                  <Mail aria-hidden="true" size={18} stroke-width={1.8} />
+                ) : (
+                  <ExternalLink aria-hidden="true" size={18} stroke-width={1.8} />
+                )}
+              </a>
+            ))
+          }
+        </span>
+      </footer>
+    </div>
+  </body>
+</html>

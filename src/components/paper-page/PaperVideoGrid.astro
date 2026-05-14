@@ -1,0 +1,68 @@
+---
+import { withBase } from "@/lib/url";
+
+type Video = {
+  name: string;
+  src: string;
+};
+
+type Props = {
+  videos: Video[];
+};
+
+const { videos } = Astro.props;
+---
+
+<div class="paper-video-grid">
+  {
+    videos.map((video) => (
+      <figure class="paper-video-card">
+        <video controls playsinline preload="metadata">
+          <source src={withBase(video.src)} type="video/mp4" />
+        </video>
+        <figcaption>{video.name}</figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  .paper-video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    width: min(100%, 1080px);
+    margin: 0 auto;
+  }
+
+  .paper-video-card {
+    margin: 0;
+  }
+
+  .paper-video-card video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+    background: #111;
+  }
+
+  .paper-video-card figcaption {
+    margin-top: 8px;
+    color: #555;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  @media (max-width: 720px) {
+    .paper-video-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 520px) {
+    .paper-video-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

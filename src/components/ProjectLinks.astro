@@ -1,0 +1,59 @@
+---
+import {
+  Database,
+  ExternalLink,
+  FileText,
+  Globe,
+  MonitorPlay,
+  Play,
+} from "@lucide/astro";
+import GitHubIcon from "@/components/icons/GitHubIcon.astro";
+import HuggingFaceIcon from "@/components/icons/HuggingFaceIcon.astro";
+import { withBase } from "@/lib/url";
+
+type ProjectLinks = {
+  paper?: string;
+  code?: string;
+  demo?: string;
+  video?: string;
+  dataset?: string;
+  model?: string;
+  website?: string;
+};
+
+type Props = {
+  links?: ProjectLinks;
+};
+
+const { links = {} } = Astro.props;
+
+const linkItems = [
+  { key: "paper", label: "Paper", href: links.paper, icon: FileText },
+  { key: "code", label: "Code", href: links.code, icon: GitHubIcon },
+  { key: "demo", label: "Demo", href: links.demo, icon: MonitorPlay },
+  { key: "video", label: "Video", href: links.video, icon: Play },
+  { key: "dataset", label: "Dataset", href: links.dataset, icon: Database },
+  { key: "model", label: "Model", href: links.model, icon: HuggingFaceIcon },
+  { key: "website", label: "Website", href: links.website, icon: Globe },
+].filter((item) => item.href);
+
+const brandLabels = new Set(["Code", "Model"]);
+---
+
+{
+  linkItems.length > 0 && (
+    <div class="project-links" aria-label="Project links">
+      {linkItems.map(({ label, href, icon: Icon }) => (
+        <a href={withBase(href!)} class="project-link">
+          {brandLabels.has(label) ? (
+            <Icon size={17} />
+          ) : (
+            <Icon aria-hidden="true" size={17} stroke-width={1.8} />
+          )}
+          <span>{label}</span>
+          <ExternalLink aria-hidden="true" size={13} stroke-width={1.8} />
+        </a>
+      ))}
+    </div>
+  )
+}

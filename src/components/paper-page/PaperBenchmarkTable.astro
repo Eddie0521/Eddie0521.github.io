@@ -1,0 +1,80 @@
+---
+type BenchmarkRow = {
+  benchmark: string;
+  vq: boolean;
+  tc: boolean;
+  ic: boolean;
+  promptType: string;
+  aggregation: string;
+  year: string;
+  highlighted?: boolean;
+};
+
+type Props = {
+  rows: BenchmarkRow[];
+};
+
+const { rows } = Astro.props;
+---
+
+<div class="paper-table-wrap">
+  <table class="paper-benchmark-table">
+    <thead>
+      <tr>
+        <th>Benchmark</th>
+        <th>VQ</th>
+        <th>TC</th>
+        <th>IC</th>
+        <th>Prompt Type</th>
+        <th>Aggregation Strategy</th>
+        <th>Year</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr class:list={{ "is-highlighted": row.highlighted }}>
+            <td>{row.highlighted ? <strong>{row.benchmark}</strong> : row.benchmark}</td>
+            <td>{row.vq ? "✓" : "×"}</td>
+            <td>{row.tc ? "✓" : "×"}</td>
+            <td>{row.ic ? "✓" : "×"}</td>
+            <td>{row.promptType}</td>
+            <td>{row.aggregation}</td>
+            <td>{row.year}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .paper-table-wrap {
+    overflow-x: auto;
+  }
+
+  .paper-benchmark-table {
+    width: min(100%, 980px);
+    margin: 0 auto;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .paper-benchmark-table th,
+  .paper-benchmark-table td {
+    padding: 10px 12px;
+    border: 1px solid #dbdbdb;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .paper-benchmark-table th {
+    background: #f5f5f5;
+    color: #363636;
+    font-weight: 600;
+  }
+
+  .paper-benchmark-table tr.is-highlighted {
+    background: #eef6ff;
+  }
+</style>

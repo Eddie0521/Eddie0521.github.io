@@ -1,0 +1,57 @@
+---
+import { withBase } from "@/lib/url";
+
+type FooterLink = {
+  label: string;
+  href?: string;
+};
+
+type Props = {
+  links: FooterLink[];
+};
+
+const { links } = Astro.props;
+---
+
+<footer class="paper-footer">
+  <div class="paper-footer__links">
+    {
+      links.map((link) =>
+        link.href ? <a href={withBase(link.href)}>{link.label}</a> : <span>{link.label}</span>,
+      )
+    }
+  </div>
+</footer>
+
+<style>
+  .paper-footer {
+    width: min(calc(100% - 32px), 960px);
+    margin: 0 auto;
+    padding: 18px 0 50px;
+    border-top: 1px solid #d9d9d9;
+  }
+
+  .paper-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    color: #9a9a9a;
+    font-size: 0.95rem;
+  }
+
+  .paper-footer__links a,
+  .paper-footer__links span {
+    color: #9a9a9a;
+  }
+
+  .paper-footer__links a:hover {
+    color: #777;
+  }
+
+  .paper-footer__links > :not(:last-child)::after {
+    content: "/";
+    margin-left: 8px;
+    color: #c7c7c7;
+  }
+</style>

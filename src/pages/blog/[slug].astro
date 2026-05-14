@@ -1,0 +1,39 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getBlogPostSlug, getSiteConfig } from "@/lib/content-data";
+import { formatDate } from "@/lib/dates";
+import { getReadingTime } from "@/lib/reading-time";
+import { withBase } from "@/lib/url";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+
+  return posts.map((post) => ({
+    params: { slug: getBlogPostSlug(post) },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const site = await getSiteConfig();
+const { Content } = await render(post);
+const readingTime = getReadingTime(post.body);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="article">
+    <header class="article__header">
+      <a href={withBase("/blog/")} class="text-link">Back to Blogs</a>
+      <h1>{post.data.title}</h1>
+      <p class="article__meta">
+        <span>Date: <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time></span>
+        <span>Estimated Reading Time: {readingTime} min</span>
+        <span>Author: {site.name}</span>
+      </p>
+    </header>
+    <div class="article__body">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

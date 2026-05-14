@@ -1,0 +1,63 @@
+---
+title: "Advancing Narrative Long Video Generation via Training-Free Identity-Aware Memory"
+shortTitle: "IAMFlow"
+description: "A training-free identity-aware memory framework that preserves persistent entities across evolving prompts in narrative long video generation."
+authors:
+  - "Jinzhuo Liu"
+  - "Jiangning Zhang"
+  - "Wencan Jiang"
+  - "Yabiao Wang"
+  - "Dingkang Liang"
+  - "Zhucun Xue"
+  - "Ran Yi"
+  - "Yong Liu"
+affiliations:
+  - "Zhejiang University"
+  - "Tencent Youtu Lab"
+  - "Huazhong University of Science and Technology"
+  - "Shanghai Jiao Tong University"
+venue: "arXiv preprint"
+publishedAt: "2026-05-13"
+heroImage: "/projects/iamflow/teaser.png"
+heroImageAlt: "IAMFlow teaser comparing memory paradigms and long-term identity preservation results"
+thumbnail: "/projects/iamflow/method.png"
+thumbnailAlt: "IAMFlow method overview"
+links:
+  paper: "/projects/iamflow/iamflow.pdf"
+  code: "https://github.com/Eddie0521/IAMFlow"
+  model: "https://huggingface.co/Eddie0521/IAMFlow-FP8"
+featured: true
+draft: false
+---
+
+import BibTeXBlock from "@/components/BibTeXBlock.astro";
+import ProjectSection from "@/components/ProjectSection.astro";
+
+<ProjectSection title="Abstract">
+Autoregressive video generation is promising for long and interactive video synthesis, but long rollouts still suffer from memory degradation, identity drift, character duplication, and attribute loss. IAMFlow addresses this with a training-free identity-aware memory framework that explicitly models persistent entities and tracks their attributes across evolving prompts.
+</ProjectSection>
+
+<ProjectSection title="Highlights">
+- Introduces identity-aware memory for long video generation, organizing historical evidence around persistent entity IDs instead of implicit frame or token similarity.
+- Uses an LLM to extract entities and assign global IDs, then uses asynchronous VLM verification to refine visual attributes from generated frames.
+- Adds a practical inference acceleration pipeline with asynchronous visual verification, adaptive prompt transition, and model quantization.
+- Introduces NarraStream-Bench, a 324-script benchmark for narrative streaming video generation across visual quality, temporal consistency, and instruction compliance.
+</ProjectSection>
+
+<ProjectSection title="Method">
+IAMFlow maintains a global entity registry, a frame archive, and an active identity-aware memory buffer. For each prompt, entities and visual attributes are parsed into persistent IDs; during generation, archived frames are scored and retrieved to cover the active identities; verified keyframes are then injected back into the autoregressive generation process as structured long-term memory.
+</ProjectSection>
+
+<ProjectSection title="Results">
+Experiments on NarraStream-Bench show that IAMFlow achieves the best overall performance among the evaluated baselines, with especially strong gains on metrics that stress entity-state memory, boundary smoothness, conditional adjacent consistency, and conditional long-range consistency. The system also reports a 1.39x speedup over the most efficient baseline in the 60-second multi-prompt setting.
+</ProjectSection>
+
+<ProjectSection title="BibTeX">
+<BibTeXBlock code={`@misc{liu2026iamflow,
+  title={Advancing Narrative Long Video Generation via Training-Free Identity-Aware Memory},
+  author={Liu, Jinzhuo and Zhang, Jiangning and Jiang, Wencan and Wang, Yabiao and Liang, Dingkang and Xue, Zhucun and Yi, Ran and Liu, Yong},
+  year={2026},
+  note={arXiv preprint},
+  url={https://github.com/Eddie0521/IAMFlow}
+}`} />
+</ProjectSection>

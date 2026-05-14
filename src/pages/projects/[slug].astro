@@ -1,0 +1,40 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectHero from "@/components/ProjectHero.astro";
+import ProjectMedia from "@/components/ProjectMedia.astro";
+import { getProjectSlug } from "@/lib/content-data";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection(
+    "projects",
+    ({ data, id }) => !data.draft && id !== "iamflow",
+  );
+
+  return projects.map((project) => ({
+    params: { slug: getProjectSlug(project) },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={project.data.shortTitle ?? project.data.title} description={project.data.description}>
+  <article class="project-detail">
+    <ProjectHero
+      title={project.data.title}
+      description={project.data.description}
+      authors={project.data.authors}
+      affiliations={project.data.affiliations}
+      venue={project.data.venue}
+      publishedAt={project.data.publishedAt}
+      links={project.data.links}
+    />
+    <ProjectMedia src={project.data.heroImage} alt={project.data.heroImageAlt ?? project.data.title} />
+    <div class="project-body">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

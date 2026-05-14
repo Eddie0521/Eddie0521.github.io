@@ -1,0 +1,30 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import SectionTitle from "@/components/SectionTitle.astro";
+import { getBlogPostHref, getBlogPosts } from "@/lib/content-data";
+import { formatDate } from "@/lib/dates";
+import { withBase } from "@/lib/url";
+
+const posts = await getBlogPosts();
+---
+
+<BaseLayout title="Blogs" description="Notes and essays.">
+  <section class="content-band">
+    <SectionTitle title="Blogs" />
+    <div class="post-list">
+      {
+        posts.map((post) => (
+          <a class="post-row" href={withBase(getBlogPostHref(post))}>
+            <time datetime={post.data.publishedAt.toISOString()}>
+              {formatDate(post.data.publishedAt)}
+            </time>
+            <span>
+              <strong>{post.data.title}</strong>
+              <small>{post.data.description}</small>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

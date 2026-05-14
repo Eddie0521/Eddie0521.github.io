@@ -1,0 +1,24 @@
+site:
+  name: "Jinzhuo Liu"
+  brand: "Eddie0521"
+  title: "Personal Website"
+  description: "A personal website for notes, projects, research updates, and small pieces of work in progress."
+  location: ""
+  role: ""
+  avatar: "avatar.png"
+  topbarIcon: "avatar-transparent.png"
+  intro:
+    - "Pursuing an M.S. degree in the College of Control Science and Engineering at Zhejiang University since 2025."
+    - "My research interest is in autoregressive long video generation, especially its application in World Model and Embodied AI."
+  navigation:
+    - label: "Home"
+      href: "/"
+    - label: "Projects"
+      href: "/projects/"
+    - label: "Blogs"
+      href: "/blog/"
+  socialLinks:
+    - label: "GitHub"
+      href: "https://github.com/Eddie0521"
+    - label: "Email"
+      href: "mailto:jinzhuo.liu@zju.edu.cn"

@@ -1,0 +1,17 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectPublicationRow from "@/components/ProjectPublicationRow.astro";
+import SectionTitle from "@/components/SectionTitle.astro";
+import { getProjects } from "@/lib/content-data";
+
+const projects = await getProjects();
+---
+
+<BaseLayout title="Projects" description="Projects and experiments.">
+  <section class="content-band">
+    <SectionTitle title="Projects" />
+    <div class="project-publication-list">
+      {projects.map((project) => <ProjectPublicationRow project={project} />)}
+    </div>
+  </section>
+</BaseLayout>

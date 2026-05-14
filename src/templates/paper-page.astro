@@ -1,0 +1,135 @@
+---
+import PaperBenchmarkTable from "@/components/paper-page/PaperBenchmarkTable.astro";
+import PaperFooterLinks from "@/components/paper-page/PaperFooterLinks.astro";
+import PaperHero from "@/components/paper-page/PaperHero.astro";
+import PaperPageLayout from "@/components/paper-page/PaperPageLayout.astro";
+import PaperSection from "@/components/paper-page/PaperSection.astro";
+import PaperVideoGrid from "@/components/paper-page/PaperVideoGrid.astro";
+import { withBase } from "@/lib/url";
+
+const title = "My Paper Title";
+const description = "A concise one-sentence paper summary.";
+
+const logos = [
+  {
+    src: "/projects/my-paper/logo.png",
+    alt: "My Paper",
+    className: "paper-logo-main",
+  },
+];
+
+const authors = [
+  { name: "Your Name", href: "https://example.com", marks: ["1"] },
+  { name: "Collaborator", marks: ["1"] },
+];
+
+const affiliations = [{ mark: "1", name: "Your University" }];
+
+const links = {
+  paper: "/projects/my-paper/paper.pdf",
+  code: "https://github.com/your-name/my-paper",
+  model: "https://huggingface.co/your-name/my-paper",
+};
+
+const benchmarkRows = [
+  {
+    benchmark: "Our Method",
+    vq: true,
+    tc: true,
+    ic: true,
+    promptType: "Multi",
+    aggregation: "Average",
+    year: "2026",
+    highlighted: true,
+  },
+];
+
+const demoVideos = [{ name: "Demo", src: "/projects/my-paper/demo.mp4" }];
+
+const footerLinks = [
+  { label: "Personal Website", href: "/" },
+  { label: "Paper", href: links.paper },
+  { label: "Code", href: links.code },
+  { label: "Model", href: links.model },
+];
+---
+
+<PaperPageLayout title="My Paper" description={description} favicon="/projects/my-paper/icon.png">
+  <PaperHero
+    title={title}
+    logos={logos}
+    authors={authors}
+    affiliations={affiliations}
+    links={links}
+  />
+
+  <main>
+    <PaperSection title="Highlights" tight>
+      <div class="highlights-list">
+        <p><strong>(1)</strong> Replace this with your first contribution.</p>
+        <p><strong>(2)</strong> Replace this with your second contribution.</p>
+      </div>
+      <img
+        src={withBase("/projects/my-paper/teaser.png")}
+        class="paper-image paper-image--medium"
+        alt="My paper teaser"
+        loading="lazy"
+      />
+    </PaperSection>
+
+    <PaperSection title="Method" wide>
+      <h3>Framework</h3>
+      <img
+        src={withBase("/projects/my-paper/method.png")}
+        class="paper-image"
+        alt="Method overview"
+        loading="lazy"
+      />
+    </PaperSection>
+
+    <PaperSection title="Benchmark" wide>
+      <PaperBenchmarkTable rows={benchmarkRows} />
+    </PaperSection>
+
+    <PaperSection title="Demo Videos" wide>
+      <PaperVideoGrid videos={demoVideos} />
+    </PaperSection>
+
+    <PaperSection title="BibTeX">
+      <pre class="bibtex"><code>{`@misc{your2026paper,
+  title={My Paper Title},
+  author={Your Name},
+  year={2026}
+}`}</code></pre>
+    </PaperSection>
+
+    <PaperFooterLinks links={footerLinks} />
+  </main>
+</PaperPageLayout>
+
+<style>
+  :global(.paper-logo-main) {
+    height: 72px;
+  }
+
+  .highlights-list {
+    max-width: 860px;
+    margin: 0 auto 24px;
+    font-size: 1.06rem;
+  }
+
+  .highlights-list p {
+    margin: 0 0 14px;
+  }
+
+  .bibtex {
+    overflow-x: auto;
+    margin: 0;
+    padding: 16px;
+    border-radius: 6px;
+    background: #f5f5f5;
+    color: #363636;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.92rem;
+  }
+</style>

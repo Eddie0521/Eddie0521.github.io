@@ -1,0 +1,30 @@
+---
+import { getSiteConfig } from "@/lib/content-data";
+import { withBase } from "@/lib/url";
+
+const pathname = Astro.url.pathname;
+const site = await getSiteConfig();
+---
+
+<header class="topbar">
+  <a class="brand" href={withBase("/")} aria-label="Home">
+    <img src={withBase(site.topbarIcon)} alt="" width="42" height="42" />
+  </a>
+  <nav aria-label="Primary navigation">
+    {
+      site.navigation.map((item) => {
+        const itemPath = withBase(item.href);
+        const isActive =
+          item.href === "/"
+            ? pathname === import.meta.env.BASE_URL
+            : pathname.startsWith(itemPath);
+
+        return (
+          <a href={itemPath} aria-current={isActive ? "page" : undefined}>
+            {item.label}
+          </a>
+        );
+      })
+    }
+  </nav>
+</header>

@@ -1,0 +1,39 @@
+---
+import type { ProjectListItem } from "@/lib/content-data";
+import { withBase } from "@/lib/url";
+
+type Props = {
+  project: ProjectListItem;
+};
+
+const { project } = Astro.props;
+const linkItems = [
+  { label: "Paper", href: project.links.paper },
+  { label: "Code", href: project.links.code },
+  { label: "Demo", href: project.links.demo },
+  { label: "Project Page", href: project.href },
+].filter((item): item is { label: string; href: string } => Boolean(item.href));
+---
+
+<article class="project-row">
+  {
+    project.thumbnail && (
+      <a class="project-row__media" href={withBase(project.href)} aria-label={`Open ${project.name}`}>
+        <img
+          src={withBase(project.thumbnail)}
+          alt={project.thumbnailAlt ?? `${project.name} thumbnail`}
+          loading="lazy"
+        />
+      </a>
+    )
+  }
+  <div class="project-row__copy">
+    <h3>
+      <a href={withBase(project.href)}>{project.title}</a>
+    </h3>
+    {project.authors.length > 0 && <p class="project-row__authors">{project.authors.join(", ")}</p>}
+    <div class="project-row__links" aria-label={`${project.name} links`}>
+      {linkItems.map(({ label, href }) => <a href={withBase(href)}>[{label}]</a>)}
+    </div>
+  </div>
+</article>

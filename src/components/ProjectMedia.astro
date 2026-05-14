@@ -1,0 +1,38 @@
+---
+import { withBase } from "@/lib/url";
+
+type Props = {
+  src?: string;
+  alt?: string;
+  caption?: string;
+  type?: "image" | "video" | "youtube";
+  poster?: string;
+};
+
+const { src, alt = "", caption, type = "image", poster } = Astro.props;
+---
+
+{
+  src && (
+    <figure class="project-media">
+      {type === "video" ? (
+        <video controls playsinline preload="metadata" poster={poster ? withBase(poster) : undefined}>
+          <source src={withBase(src)} />
+        </video>
+      ) : type === "youtube" ? (
+        <div class="project-media__embed">
+          <iframe
+            src={src}
+            title={alt || caption || "Project video"}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+      ) : (
+        <img src={withBase(src)} alt={alt} loading="lazy" />
+      )}
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>
+  )
+}

@@ -1,0 +1,166 @@
+---
+import { withBase } from "@/lib/url";
+
+type Props = {
+  title: string;
+  description: string;
+  favicon?: string;
+};
+
+const { title, description, favicon } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    {favicon && <link rel="icon" href={withBase(favicon)} type="image/png" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body class="paper-page">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  html {
+    background: #fff;
+  }
+
+  body.paper-page {
+    margin: 0;
+    color: #4a4a4a;
+    font-family: "Noto Sans", "Google Sans", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .paper-page a {
+    color: #3273dc;
+    text-decoration: none;
+  }
+
+  .paper-page a:hover {
+    color: #1f4bb6;
+  }
+
+  .paper-page .paper-container {
+    width: min(100% - 32px, 960px);
+    margin: 0 auto;
+  }
+
+  .paper-page .paper-container--wide {
+    max-width: 1180px;
+  }
+
+  .paper-page h1 {
+    max-width: 960px;
+    margin: 0 auto 22px;
+    color: #363636;
+    font-family: "Google Sans", "Noto Sans", Arial, sans-serif;
+    font-size: clamp(2rem, 4.8vw, 3rem);
+    font-weight: 600;
+    line-height: 1.12;
+  }
+
+  .paper-page h2,
+  .paper-page h3 {
+    color: #363636;
+    font-family: "Google Sans", "Noto Sans", Arial, sans-serif;
+    text-align: center;
+  }
+
+  .paper-page h2 {
+    margin: 0 0 28px;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .paper-page h2::after {
+    content: "";
+    display: block;
+    width: min(100%, 1040px);
+    height: 1px;
+    margin: 16px auto 0;
+    background: #d9d9d9;
+  }
+
+  .paper-page h3 {
+    margin: 28px 0 18px;
+    font-size: 1.42rem;
+    font-weight: 500;
+  }
+
+  .paper-page .paper-section {
+    padding: 46px 0;
+  }
+
+  .paper-page .paper-section--tight {
+    padding-top: 30px;
+  }
+
+  .paper-page .paper-image {
+    display: block;
+    width: min(100%, 1040px);
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .paper-page .paper-image--medium {
+    width: min(100%, 960px);
+  }
+
+  .paper-page .paper-image--narrow {
+    width: min(100%, 720px);
+  }
+
+  .paper-page .paper-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    gap: 7px;
+    padding: 8px 15px;
+    border-radius: 999px;
+    background: #363636;
+    color: #fff;
+    font-size: 0.96rem;
+    line-height: 1;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+
+  .paper-page .paper-button:hover {
+    background: #1f1f1f;
+    color: #fff;
+  }
+
+  .paper-page .paper-button:active {
+    transform: scale(0.97);
+  }
+
+  .paper-page .paper-button--disabled {
+    cursor: default;
+    opacity: 0.72;
+  }
+
+  .paper-page .paper-button__icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  @media (max-width: 720px) {
+    .paper-page .paper-section {
+      padding: 34px 0;
+    }
+  }
+</style>

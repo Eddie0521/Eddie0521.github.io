@@ -1,0 +1,284 @@
+---
+import PaperBenchmarkTable from "@/components/paper-page/PaperBenchmarkTable.astro";
+import PaperFooterLinks from "@/components/paper-page/PaperFooterLinks.astro";
+import PaperHero from "@/components/paper-page/PaperHero.astro";
+import PaperPageLayout from "@/components/paper-page/PaperPageLayout.astro";
+import PaperSection from "@/components/paper-page/PaperSection.astro";
+import PaperVideoGrid from "@/components/paper-page/PaperVideoGrid.astro";
+import { withBase } from "@/lib/url";
+
+const title = "Advancing Narrative Long Video Generation via Training-Free Identity-Aware Memory";
+const description =
+  "A training-free identity-aware memory framework for narrative long video generation.";
+
+const logos = [
+  {
+    src: "/projects/iamflow/iamflow-logo.png",
+    alt: "IAMFlow",
+    className: "iamflow-logo",
+  },
+  {
+    src: "/projects/iamflow/narrastream-logo.png",
+    alt: "NarraStream-Bench",
+    className: "narrastream-logo",
+  },
+];
+
+const authors = [
+  { name: "Jinzhuo Liu", href: "https://github.com/Eddie0521", marks: ["1"] },
+  { name: "Jiangning Zhang", href: "https://zhangzjn.github.io", marks: ["1"] },
+  { name: "Wencan Jiang", href: "https://github.com/Rinke02", marks: ["1"] },
+  {
+    name: "Yabiao Wang",
+    href: "https://scholar.google.com/citations?user=xiK4nFUAAAAJ&hl=zh-CN",
+    marks: ["1", "2"],
+  },
+  { name: "Dingkang Liang", href: "https://dk-liang.github.io/", marks: ["3"] },
+  {
+    name: "Zhucun Xue",
+    href: "https://scholar.google.com/citations?user=m3KDreEAAAAJ&hl=en",
+    marks: ["1"],
+  },
+  { name: "Ran Yi", href: "https://yiranran.github.io/", marks: ["4"] },
+  { name: "Yong Liu", href: "https://person.zju.edu.cn/yongliu", marks: ["1", "*"] },
+];
+
+const affiliations = [
+  { mark: "1", name: "Zhejiang University" },
+  { mark: "2", name: "Tencent Youtu Lab" },
+  { mark: "3", name: "Huazhong University of Science and Technology" },
+  { mark: "4", name: "Shanghai Jiao Tong University" },
+];
+
+const links = {
+  code: "https://github.com/Eddie0521/IAMFlow",
+  model: "https://huggingface.co/Eddie0521/IAMFlow-FP8",
+};
+
+const highlights = [
+  {
+    lead: "We introduce",
+    strong: "IAMFlow",
+    rest:
+      "a training-free identity-aware memory framework that explicitly organizes historical information around persistent entities and attributes, enabling reliable identity preservation across evolving prompt transitions.",
+  },
+  {
+    lead: "We design",
+    strong: "a systematic inference acceleration pipeline",
+    rest:
+      "to make the framework computationally practical, combining asynchronous visual verification, adaptive prompt transition, and model quantization to preserve long-term consistency without sacrificing generation speed.",
+  },
+  {
+    lead: "We introduce",
+    strong: "NarraStream-Bench",
+    rest:
+      "a modern benchmark suite for assessing long-term consistency in narrative streaming video generation. Extensive experiments and ablation studies demonstrate that IAMFlow achieves superior performance across various metrics while enabling more efficient inference.",
+  },
+];
+
+const benchmarkRows = [
+  {
+    benchmark: "VBench-Long",
+    vq: true,
+    tc: false,
+    ic: false,
+    promptType: "Single",
+    aggregation: "Slow-Fast Avg.",
+    year: "2024",
+  },
+  {
+    benchmark: "LV-Bench",
+    vq: true,
+    tc: true,
+    ic: false,
+    promptType: "Single",
+    aggregation: "VDE",
+    year: "2025",
+  },
+  {
+    benchmark: "NarrLV",
+    vq: false,
+    tc: true,
+    ic: true,
+    promptType: "Single",
+    aggregation: "TNA-based QA",
+    year: "2025",
+  },
+  {
+    benchmark: "NarraStream-Bench",
+    vq: true,
+    tc: true,
+    ic: true,
+    promptType: "Multi",
+    aggregation: "Narrative-Aware",
+    year: "2026",
+    highlighted: true,
+  },
+];
+
+const demoVideos = [
+  { name: "IAMFlow", src: "/projects/iamflow/demo/iamflow.mp4" },
+  { name: "LongLive", src: "/projects/iamflow/demo/longlive.mp4" },
+  { name: "MemFlow", src: "/projects/iamflow/demo/memflow.mp4" },
+  { name: "Deep Forcing", src: "/projects/iamflow/demo/deepforcing.mp4" },
+  { name: "Self Forcing", src: "/projects/iamflow/demo/selfforcing.mp4" },
+  { name: "Rolling Forcing", src: "/projects/iamflow/demo/rollingforcing.mp4" },
+];
+
+const footerLinks = [
+  { label: "Personal Website", href: "/" },
+  { label: "Paper(Coming Soon)" },
+  { label: "Code", href: links.code },
+  { label: "Model", href: links.model },
+];
+
+const bibtex = "Coming Soon";
+---
+
+<PaperPageLayout title="IAMFlow" description={description} favicon="/projects/iamflow/icon.png">
+  <PaperHero
+    title={title}
+    logos={logos}
+    authors={authors}
+    affiliations={affiliations}
+    links={links}
+  />
+
+  <main>
+    <PaperSection title="Highlights" tight>
+      <div class="highlights-list">
+        {
+          highlights.map((highlight, index) => (
+            <p>
+              <strong>({index + 1})</strong> {highlight.lead}{" "}
+              <strong
+                class:list={{
+                  "highlight-keyword":
+                    highlight.strong === "IAMFlow" ||
+                    highlight.strong === "NarraStream-Bench",
+                }}
+              >
+                {highlight.strong}
+              </strong>, {highlight.rest}
+            </p>
+          ))
+        }
+      </div>
+      <img
+        src={withBase("/projects/iamflow/teaser-figure.png")}
+        class="paper-image paper-image--medium"
+        alt="IAMFlow teaser"
+        loading="lazy"
+      />
+    </PaperSection>
+
+    <PaperSection title="Method: IAMFlow" wide>
+      <h3>Framework of IAMFlow</h3>
+      <img
+        src={withBase("/projects/iamflow/framework.png")}
+        class="paper-image"
+        alt="Framework of IAMFlow"
+        loading="lazy"
+      />
+    </PaperSection>
+
+    <PaperSection title="Benchmark: NarraStream-Bench" wide>
+      <h3>Overview of NarraStream-Bench</h3>
+      <img
+        src={withBase("/projects/iamflow/narrastream-bench.png")}
+        class="paper-image"
+        alt="Overview of NarraStream-Bench"
+        loading="lazy"
+      />
+
+      <h3>Benchmark Comparison</h3>
+      <p class="table-caption">
+        <strong>Comparison of related long-video generation benchmarks.</strong> The custom
+        VBench-Long protocol only supports metrics for visual quality.
+      </p>
+      <PaperBenchmarkTable rows={benchmarkRows} />
+    </PaperSection>
+
+    <PaperSection title="Experiments" wide>
+      <h3>Qualitative Visualization</h3>
+      <img
+        src={withBase("/projects/iamflow/qualitative-results.png")}
+        class="paper-image"
+        alt="Qualitative results of IAMFlow under NarraStream-Bench"
+        loading="lazy"
+      />
+
+      <h3>Quantitative Comparison</h3>
+      <img
+        src={withBase("/projects/iamflow/quantitative-comparison.png")}
+        class="paper-image paper-image--narrow"
+        alt="Quantitative comparison of IAMFlow"
+        loading="lazy"
+      />
+    </PaperSection>
+
+    <PaperSection title="Demo Videos" wide>
+      <PaperVideoGrid videos={demoVideos} />
+    </PaperSection>
+
+    <PaperSection title="BibTeX">
+      <pre class="bibtex"><code>{bibtex}</code></pre>
+    </PaperSection>
+
+    <PaperFooterLinks links={footerLinks} />
+  </main>
+</PaperPageLayout>
+
+<style>
+  :global(.iamflow-logo) {
+    max-width: 330px;
+    max-height: 72px;
+  }
+
+  :global(.narrastream-logo) {
+    max-width: 430px;
+    max-height: 64px;
+  }
+
+  .highlights-list {
+    max-width: 860px;
+    margin: 0 auto 24px;
+    font-size: 1.06rem;
+  }
+
+  .highlights-list p {
+    margin: 0 0 14px;
+  }
+
+  .highlight-keyword {
+    color: #b5261c;
+  }
+
+  .table-caption {
+    max-width: 920px;
+    margin: 0 auto 14px;
+    color: #555;
+    text-align: center;
+  }
+
+  .bibtex {
+    overflow-x: auto;
+    margin: 0;
+    padding: 16px;
+    border-radius: 6px;
+    background: #f5f5f5;
+    color: #363636;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.92rem;
+  }
+
+  @media (max-width: 720px) {
+    :global(.iamflow-logo) {
+      max-height: 56px;
+    }
+
+    :global(.narrastream-logo) {
+      max-height: 48px;
+    }
+  }
+</style>

@@ -1,0 +1,197 @@
+---
+import { FileText } from "@lucide/astro";
+import GitHubIcon from "@/components/icons/GitHubIcon.astro";
+import HuggingFaceIcon from "@/components/icons/HuggingFaceIcon.astro";
+import { withBase } from "@/lib/url";
+
+type Logo = {
+  src: string;
+  alt: string;
+  className?: string;
+};
+
+type Author = {
+  name: string;
+  href?: string;
+  marks?: string[];
+};
+
+type Affiliation = {
+  mark: string;
+  name: string;
+};
+
+type Links = {
+  paper?: string;
+  paperLabel?: string;
+  code?: string;
+  model?: string;
+};
+
+type Props = {
+  title: string;
+  logos?: Logo[];
+  authors?: Author[];
+  affiliations?: Affiliation[];
+  links?: Links;
+};
+
+const { title, logos = [], authors = [], affiliations = [], links = {} } = Astro.props;
+const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
+---
+
+<section class="paper-hero">
+  <div class="paper-container">
+    {
+      logos.length > 0 && (
+        <div class="paper-logos" aria-label="Project logos">
+          {logos.map((logo) => (
+            <img src={withBase(logo.src)} alt={logo.alt} class:list={["paper-logo", logo.className]} />
+          ))}
+        </div>
+      )
+    }
+    <h1>{title}</h1>
+
+    {
+      authors.length > 0 && (
+        <div class="paper-authors">
+          {authors.map((author) => (
+            <span>
+              {author.href ? <a href={author.href}>{author.name}</a> : author.name}
+              {author.marks && author.marks.length > 0 && <sup>{author.marks.join(",")}</sup>}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      affiliations.length > 0 && (
+        <div class="paper-affiliations">
+          {affiliations.map((affiliation) => (
+            <span>
+              <sup>{affiliation.mark}</sup>{affiliation.name}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="paper-links">
+      {
+        links.paper ? (
+          <a href={withBase(links.paper)} class="paper-button">
+            <span class="paper-button__icon">
+              <FileText aria-hidden="true" size={17} stroke-width={2.2} />
+            </span>
+            <span>{paperLabel}</span>
+          </a>
+        ) : (
+          <span class="paper-button paper-button--disabled" aria-disabled="true">
+            <span class="paper-button__icon">
+              <FileText aria-hidden="true" size={17} stroke-width={2.2} />
+            </span>
+            <span>{paperLabel}</span>
+          </span>
+        )
+      }
+      {
+        links.code && (
+          <a href={links.code} class="paper-button">
+            <span class="paper-button__icon">
+              <GitHubIcon size={17} />
+            </span>
+            <span>Code</span>
+          </a>
+        )
+      }
+      {
+        links.model && (
+          <a href={links.model} class="paper-button">
+            <span class="paper-button__icon">
+              <HuggingFaceIcon size={18} />
+            </span>
+            <span>Model</span>
+          </a>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .paper-hero {
+    padding: 48px 0 28px;
+    text-align: center;
+  }
+
+  .paper-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 960px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+
+  .paper-logo {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(42vw, 430px);
+    max-height: 72px;
+    object-fit: contain;
+  }
+
+  .paper-authors,
+  .paper-affiliations {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px 14px;
+    margin-bottom: 10px;
+    font-size: 1.16rem;
+  }
+
+  .paper-affiliations {
+    color: #555;
+    font-size: 1.02rem;
+  }
+
+  sup {
+    margin-left: 2px;
+    font-size: 0.68em;
+  }
+
+  .paper-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  @media (max-width: 720px) {
+    .paper-hero {
+      padding-top: 34px;
+    }
+
+    .paper-logos {
+      flex-direction: column;
+      gap: 12px;
+      overflow: visible;
+    }
+
+    .paper-logo {
+      max-width: min(86vw, 430px);
+    }
+
+    .paper-authors,
+    .paper-affiliations {
+      font-size: 1rem;
+    }
+  }
+</style>

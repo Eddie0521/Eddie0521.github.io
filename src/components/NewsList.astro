@@ -1,0 +1,34 @@
+---
+import { ArrowUpRight } from "@lucide/astro";
+import { getNewsItems } from "@/lib/content-data";
+import { formatDate } from "@/lib/dates";
+import { withBase } from "@/lib/url";
+
+const news = await getNewsItems();
+---
+
+<ol class="news-list">
+  {
+    news.map((item) => (
+      <li class="news-item">
+        <time datetime={item.date.toISOString()}>{formatDate(item.date)}</time>
+        <div class="news-copy">
+          <h3>
+            {item.href ? (
+              <a href={withBase(item.href)}>
+                {item.title}
+                <ArrowUpRight aria-hidden="true" size={16} stroke-width={1.8} />
+              </a>
+            ) : (
+              item.title
+            )}
+          </h3>
+          <p>{item.body}</p>
+          {item.image && (
+            <img src={withBase(item.image)} alt={item.imageAlt ?? ""} loading="lazy" />
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>

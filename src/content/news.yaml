@@ -1,0 +1,5 @@
+- id: "iamflow-paper"
+  date: "2026-05-13"
+  title: "My first paper - Advancing Narrative Long Video Generation via Training-Free Identity-Aware Memory"
+  body: "IAMFlow & NarraStream-Bench, for autoregressive long video generation."
+  href: "/projects/iamflow/"

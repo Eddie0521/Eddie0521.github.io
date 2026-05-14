@@ -1,0 +1,38 @@
+---
+title: "My Project"
+shortTitle: "My Project"
+description: "A concise one-sentence project summary."
+authors:
+  - "Your Name"
+venue: "Personal project"
+publishedAt: "2026-05-13"
+heroImage: "/projects/my-project/teaser.png"
+heroImageAlt: "A short description of the teaser image"
+thumbnail: "/projects/my-project/thumbnail.png"
+thumbnailAlt: "A short description of the thumbnail"
+links:
+  code: "https://github.com/your-name/my-project"
+  demo: "https://example.com"
+featured: false
+draft: false
+---
+
+import BibTeXBlock from "@/components/BibTeXBlock.astro";
+import ProjectSection from "@/components/ProjectSection.astro";
+
+<ProjectSection title="Abstract">
+Write the project summary here.
+</ProjectSection>
+
+<ProjectSection title="Highlights">
+- One important point.
+- Another important point.
+</ProjectSection>
+
+<ProjectSection title="BibTeX">
+<BibTeXBlock code={`@misc{your2026project,
+  title={My Project},
+  author={Your Name},
+  year={2026}
+}`} />
+</ProjectSection>

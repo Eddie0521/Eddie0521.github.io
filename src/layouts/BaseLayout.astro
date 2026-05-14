@@ -1,5 +1,6 @@
 ---
 import { ExternalLink, Mail } from "@lucide/astro";
+import FooterLike from "@/components/FooterLike.astro";
 import Header from "@/components/Header.astro";
 import GitHubIcon from "@/components/icons/GitHubIcon.astro";
 import "@/styles/global.css";
@@ -52,6 +53,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
             ))
           }
         </span>
+        <FooterLike />
       </footer>
     </div>
   </body>

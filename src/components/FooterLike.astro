@@ -1,0 +1,49 @@
+---
+import { Heart } from "@lucide/astro";
+---
+
+<span class="footer-like" data-footer-like>
+  <span class="footer-like__count" data-footer-like-count aria-live="polite">0</span>
+  <button class="footer-like__button" type="button" aria-label="Like this site" aria-pressed="false" data-footer-like-button>
+    <Heart aria-hidden="true" size={16} stroke-width={1.9} />
+  </button>
+</span>
+
+<script>
+  const likeRoot = document.querySelector<HTMLElement>("[data-footer-like]");
+  const likeCount = likeRoot?.querySelector<HTMLElement>("[data-footer-like-count]");
+  const likeButton = likeRoot?.querySelector<HTMLButtonElement>("[data-footer-like-button]");
+  const storageKey = "footer-like-state";
+
+  if (likeRoot && likeCount && likeButton) {
+    const parseState = () => {
+      try {
+        const storedState = JSON.parse(window.localStorage.getItem(storageKey) ?? "{}");
+        return {
+          count: Number.isFinite(storedState.count) ? Math.max(0, storedState.count) : 0,
+          liked: Boolean(storedState.liked),
+        };
+      } catch {
+        return { count: 0, liked: false };
+      }
+    };
+
+    const renderState = (state: { count: number; liked: boolean }) => {
+      likeCount.textContent = String(state.count);
+      likeButton.setAttribute("aria-pressed", String(state.liked));
+      likeRoot.dataset.liked = String(state.liked);
+    };
+
+    let state = parseState();
+    renderState(state);
+
+    likeButton.addEventListener("click", () => {
+      state = {
+        liked: !state.liked,
+        count: Math.max(0, state.count + (state.liked ? -1 : 1)),
+      };
+      window.localStorage.setItem(storageKey, JSON.stringify(state));
+      renderState(state);
+    });
+  }
+</script>

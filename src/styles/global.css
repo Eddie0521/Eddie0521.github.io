@@ -770,10 +770,9 @@ h2 {
 
 .site-footer {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   padding: 22px 0 32px;
   color: var(--muted);
   font-size: 0.82rem;
@@ -784,6 +783,12 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+.site-footer__divider {
+  width: 1px;
+  height: 24px;
+  background: var(--line);
 }
 
 .footer-links {

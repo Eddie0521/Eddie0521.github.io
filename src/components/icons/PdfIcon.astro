@@ -1,0 +1,43 @@
+---
+type Props = {
+  size?: number;
+};
+
+const { size = 20 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <path
+    d="M6.75 2.25h7.15L19 7.35v14.4H6.75z"
+    fill="currentColor"
+    opacity="0.18"
+  />
+  <path
+    d="M13.65 2.25v5.35H19"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M6.75 2.25h7.15L19 7.35v14.4H6.75z"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M4.8 12.25h13.3v5.05H4.8z"
+    fill="currentColor"
+  />
+  <path
+    d="M7.1 16.1v-2.7h1.08c.65 0 1.05.32 1.05.86 0 .55-.4.86-1.05.86h-.42v.98zm.66-1.54h.35c.28 0 .45-.1.45-.3 0-.19-.17-.29-.45-.29h-.35zm2.15 1.54v-2.7h1.04c.88 0 1.45.5 1.45 1.35s-.57 1.35-1.45 1.35zm.66-.57h.32c.5 0 .83-.26.83-.78s-.33-.78-.83-.78h-.32zm2.56.57v-2.7h1.9v.57h-1.24v.52h1.08v.56h-1.08v1.05z"
+    fill="white"
+  />
+</svg>

@@ -5,9 +5,13 @@ type Props = {
   title: string;
   description: string;
   favicon?: string;
+  navItems?: {
+    label: string;
+    href: string;
+  }[];
 };
 
-const { title, description, favicon } = Astro.props;
+const { title, description, favicon, navItems = [] } = Astro.props;
 ---
 
 <!doctype html>
@@ -27,8 +31,53 @@ const { title, description, favicon } = Astro.props;
     />
     <title>{title}</title>
   </head>
-  <body class="paper-page">
+  <body class:list={["paper-page", { "paper-page--with-nav": navItems.length > 0 }]}>
+    {
+      navItems.length > 0 && (
+        <header class="paper-site-header">
+          <div class="paper-container">
+            <nav class="paper-main-nav" aria-label="Project navigation">
+              <ul class="paper-nav-links">
+                {navItems.map((item, index) => (
+                  <li>
+                    <a href={item.href} class:list={{ active: index === 0 }}>
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </header>
+      )
+    }
     <slot />
+    {
+      navItems.length > 0 && (
+        <script is:inline>
+          const navLinks = Array.from(document.querySelectorAll(".paper-nav-links a"));
+          const sections = navLinks
+            .map((link) => document.querySelector(link.getAttribute("href")))
+            .filter(Boolean);
+
+          const syncActiveNav = () => {
+            const current = sections
+              .filter((section) => section.getBoundingClientRect().top <= 96)
+              .at(-1);
+
+            navLinks.forEach((link) => {
+              link.classList.toggle(
+                "active",
+                Boolean(current) && link.getAttribute("href") === `#${current.id}`,
+              );
+            });
+          };
+
+          window.addEventListener("scroll", syncActiveNav, { passive: true });
+          syncActiveNav();
+        </script>
+      )
+    }
   </body>
 </html>
 
@@ -45,6 +94,70 @@ const { title, description, favicon } = Astro.props;
     line-height: 1.55;
   }
 
+  .paper-site-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .paper-main-nav {
+    display: flex;
+    justify-content: center;
+    padding: 6px 0;
+  }
+
+  .paper-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 26px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .paper-nav-links a {
+    position: relative;
+    display: inline-flex;
+    padding-bottom: 3px;
+    color: #2d3748;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .paper-nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #667eea;
+    transition: width 180ms ease;
+  }
+
+  .paper-nav-links a:hover,
+  .paper-nav-links a.active {
+    color: #667eea;
+  }
+
+  .paper-nav-links a:hover::after,
+  .paper-nav-links a.active::after {
+    width: 100%;
+  }
+
+  .paper-page--with-nav .paper-hero {
+    padding-top: 82px;
+  }
+
   .paper-page a {
     color: #3273dc;
     text-decoration: none;
@@ -55,7 +168,8 @@ const { title, description, favicon } = Astro.props;
   }
 
   .paper-page .paper-container {
-    width: min(100% - 32px, 960px);
+    box-sizing: border-box;
+    width: min(calc(100% - 32px), 960px);
     margin: 0 auto;
   }
 
@@ -64,6 +178,7 @@ const { title, description, favicon } = Astro.props;
   }
 
   .paper-page h1 {
+    width: 100%;
     max-width: 960px;
     margin: 0 auto 22px;
     color: #363636;
@@ -71,6 +186,7 @@ const { title, description, favicon } = Astro.props;
     font-size: clamp(2rem, 4.8vw, 3rem);
     font-weight: 600;
     line-height: 1.12;
+    overflow-wrap: break-word;
   }
 
   .paper-page h2,
@@ -103,6 +219,7 @@ const { title, description, favicon } = Astro.props;
 
   .paper-page .paper-section {
     padding: 46px 0;
+    scroll-margin-top: 82px;
   }
 
   .paper-page .paper-section--tight {
@@ -159,8 +276,36 @@ const { title, description, favicon } = Astro.props;
   }
 
   @media (max-width: 720px) {
+    .paper-main-nav {
+      padding: 5px 0;
+    }
+
+    .paper-nav-links {
+      gap: 4px 10px;
+    }
+
+    .paper-nav-links a {
+      padding: 2px 2px 3px;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .paper-page--with-nav .paper-hero {
+      padding-top: 92px;
+    }
+
     .paper-page .paper-section {
       padding: 34px 0;
+    }
+
+    .paper-page h1 {
+      font-size: clamp(1.68rem, 7.5vw, 2rem);
+    }
+
+    .paper-page .paper-button {
+      min-height: 36px;
+      padding: 8px 13px;
+      font-size: 0.92rem;
     }
   }
 </style>

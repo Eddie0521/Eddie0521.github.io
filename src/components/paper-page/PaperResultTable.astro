@@ -1,0 +1,310 @@
+---
+type MetricCell = {
+  value: string;
+  rank?: "best" | "second";
+};
+
+type MetricGroup = {
+  label: string;
+  columns: string[];
+};
+
+type ResultRow = {
+  id: number;
+  model: string;
+  highlighted?: boolean;
+  values: MetricCell[];
+};
+
+type Props = {
+  groups: MetricGroup[];
+  overallLabel: string;
+  rows: ResultRow[];
+};
+
+const { groups, overallLabel, rows } = Astro.props;
+const metricLabels = groups.flatMap((group) => group.columns);
+const metricDirections = groups.flatMap((group) =>
+  group.columns.map(() => (group.label.includes("↓") ? "asc" : "desc")),
+);
+const overallDirection = overallLabel.includes("↓") ? "asc" : "desc";
+---
+
+<div class="leaderboard-container" data-result-table>
+  <table class="leaderboard-table">
+    <thead>
+      <tr>
+        <th class="no-sort" rowspan="2">ID</th>
+        <th class="no-sort method-heading" rowspan="2">Method</th>
+        {
+          groups.map((group) => (
+            <th class="no-sort metric-group" colspan={group.columns.length}>
+              {group.label}
+            </th>
+          ))
+        }
+        <th
+          class="metric-heading sortable metric-heading--overall"
+          rowspan="2"
+          data-metric-index={metricLabels.length}
+          data-sort-direction={overallDirection}
+        >
+          <span>{overallLabel}</span>
+          <span class="sort-indicator" aria-hidden="true"></span>
+        </th>
+      </tr>
+      <tr>
+        {
+          metricLabels.map((label, index) => (
+            <th
+              class="metric-heading sortable"
+              data-metric-index={index}
+              data-sort-direction={metricDirections[index]}
+            >
+              <span>{label}</span>
+              <span class="sort-indicator" aria-hidden="true"></span>
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row, index) => (
+          <tr class:list={{ "is-highlighted": row.highlighted }} data-original-index={index}>
+            <td>{row.id}</td>
+            <td class="method-cell">
+              {row.highlighted ? <strong>{row.model}</strong> : <strong>{row.model}</strong>}
+            </td>
+            {row.values.map((cell, index) => (
+              <td
+                class:list={{
+                  "metric-cell": true,
+                  "is-best": cell.rank === "best",
+                  "is-second": cell.rank === "second",
+                  "overall-cell": index === row.values.length - 1,
+                }}
+              >
+                {cell.rank === "best" ? <strong>{cell.value}</strong> : cell.value}
+              </td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const parseMetric = (cell: HTMLTableCellElement | undefined) => {
+    const value = Number.parseFloat(cell?.textContent?.trim() ?? "");
+    return Number.isNaN(value) ? Number.NEGATIVE_INFINITY : value;
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-result-table]").forEach((container) => {
+    if (container.dataset.enhanced === "true") return;
+    container.dataset.enhanced = "true";
+
+    const table = container.querySelector<HTMLTableElement>(".leaderboard-table");
+    const tbody = table?.querySelector<HTMLTableSectionElement>("tbody");
+    const sortableHeaders = Array.from(
+      table?.querySelectorAll<HTMLTableCellElement>("th.sortable") ?? [],
+    );
+
+    if (!table || !tbody || sortableHeaders.length === 0) return;
+
+    const clearActiveColumn = () => {
+      table.querySelectorAll(".active-column").forEach((cell) => {
+        cell.classList.remove("active-column");
+      });
+    };
+
+    const clearHeaderState = () => {
+      sortableHeaders.forEach((header) => {
+        header.classList.remove("js-sort-active", "js-sort-asc", "js-sort-desc");
+        header.removeAttribute("aria-sort");
+      });
+    };
+
+    const sortByHeader = (header: HTMLTableCellElement, direction?: "asc" | "desc") => {
+      const metricIndex = Number.parseInt(header.dataset.metricIndex ?? "", 10);
+      if (Number.isNaN(metricIndex)) return;
+
+      const columnIndex = metricIndex + 2;
+      const nextDirection =
+        direction ??
+        (header.classList.contains("js-sort-active")
+          ? header.classList.contains("js-sort-desc")
+            ? "asc"
+            : "desc"
+          : header.dataset.sortDirection === "asc"
+            ? "asc"
+            : "desc");
+
+      const rows = Array.from(tbody.querySelectorAll<HTMLTableRowElement>("tr"));
+      rows.sort((rowA, rowB) => {
+        const valueA = parseMetric(rowA.cells[columnIndex]);
+        const valueB = parseMetric(rowB.cells[columnIndex]);
+        const diff = nextDirection === "asc" ? valueA - valueB : valueB - valueA;
+
+        if (diff !== 0) return diff;
+        return (
+          Number.parseInt(rowA.dataset.originalIndex ?? "0", 10) -
+          Number.parseInt(rowB.dataset.originalIndex ?? "0", 10)
+        );
+      });
+
+      rows.forEach((row, index) => {
+        const idCell = row.cells[0];
+        if (idCell) idCell.textContent = String(index + 1);
+        tbody.appendChild(row);
+      });
+
+      clearHeaderState();
+      clearActiveColumn();
+
+      header.classList.add("js-sort-active", nextDirection === "asc" ? "js-sort-asc" : "js-sort-desc");
+      header.setAttribute("aria-sort", nextDirection === "asc" ? "ascending" : "descending");
+
+      tbody.querySelectorAll<HTMLTableRowElement>("tr").forEach((row) => {
+        row.cells[columnIndex]?.classList.add("active-column");
+      });
+    };
+
+    sortableHeaders.forEach((header) => {
+      header.tabIndex = 0;
+      header.addEventListener("click", () => sortByHeader(header));
+      header.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          sortByHeader(header);
+        }
+      });
+    });
+
+    const defaultHeader =
+      sortableHeaders.find((header) => header.dataset.metricIndex === "0") ?? sortableHeaders[0];
+    sortByHeader(defaultHeader, defaultHeader.dataset.sortDirection === "asc" ? "asc" : "desc");
+  });
+</script>
+
+<style>
+  .leaderboard-container {
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  .leaderboard-table {
+    width: 100%;
+    min-width: 1120px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
+    transition: background-color 0.2s;
+  }
+
+  .leaderboard-table th {
+    background-color: #f5f5f5;
+    color: #363636;
+    font-weight: 700;
+    user-select: none;
+  }
+
+  .leaderboard-table th.no-sort {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .leaderboard-table th.sortable {
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .leaderboard-table th.sortable:hover {
+    background-color: #e0e0e0;
+  }
+
+  .leaderboard-table th.js-sort-active {
+    background-color: #d4edda;
+  }
+
+  .leaderboard-table th.js-sort-active .sort-indicator::after {
+    display: inline-block;
+    margin-left: 6px;
+    color: #fff;
+    font-size: 0.72rem;
+    vertical-align: 1px;
+  }
+
+  .leaderboard-table th.js-sort-desc .sort-indicator::after {
+    content: "▼";
+  }
+
+  .leaderboard-table th.js-sort-asc .sort-indicator::after {
+    content: "▲";
+  }
+
+  .leaderboard-table .method-heading,
+  .leaderboard-table .method-cell {
+    min-width: 150px;
+    text-align: left;
+  }
+
+  .leaderboard-table .metric-group {
+    background-color: #f1f1f1;
+  }
+
+  .leaderboard-table .metric-heading {
+    min-width: 64px;
+  }
+
+  .leaderboard-table .method-cell strong {
+    font-weight: 700;
+  }
+
+  .leaderboard-table tr.is-highlighted .method-cell strong {
+    color: #b02418;
+  }
+
+  .leaderboard-table tbody tr:hover,
+  .leaderboard-table tbody tr:hover td {
+    background-color: #f0f0f0;
+  }
+
+  .leaderboard-table td.active-column {
+    background-color: #f0f9f4;
+  }
+
+  .leaderboard-table tbody tr:hover td.active-column {
+    background-color: #e0f0e8;
+  }
+
+  .metric-cell.is-best {
+    font-weight: 700;
+  }
+
+  .metric-cell.is-second {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  @media (max-width: 720px) {
+    .leaderboard-table {
+      font-size: 13px;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 7px 6px;
+    }
+  }
+</style>

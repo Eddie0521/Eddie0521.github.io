@@ -3,9 +3,22 @@ import PaperBenchmarkTable from "@/components/paper-page/PaperBenchmarkTable.ast
 import PaperFooterLinks from "@/components/paper-page/PaperFooterLinks.astro";
 import PaperHero from "@/components/paper-page/PaperHero.astro";
 import PaperPageLayout from "@/components/paper-page/PaperPageLayout.astro";
+import PaperResultTable from "@/components/paper-page/PaperResultTable.astro";
 import PaperSection from "@/components/paper-page/PaperSection.astro";
 import PaperVideoGrid from "@/components/paper-page/PaperVideoGrid.astro";
 import { withBase } from "@/lib/url";
+
+type ResultRank = "best" | "second";
+
+type ResultRow = {
+  id: number;
+  model: string;
+  highlighted?: boolean;
+  values: {
+    value: string;
+    rank?: ResultRank;
+  }[];
+};
 
 const title = "Advancing Narrative Long Video Generation via Training-Free Identity-Aware Memory";
 const description =
@@ -17,16 +30,16 @@ const logos = [
     alt: "IAMFlow",
     className: "iamflow-logo",
   },
-  {
-    src: "/projects/iamflow/narrastream-logo.png",
-    alt: "NarraStream-Bench",
-    className: "narrastream-logo",
-  },
 ];
 
 const authors = [
   { name: "Jinzhuo Liu", href: "https://eddie0521.github.io/", marks: ["1"] },
-  { name: "Jiangning Zhang", href: "https://zhangzjn.github.io", marks: ["1"] },
+  {
+    name: "Jiangning Zhang",
+    href: "https://zhangzjn.github.io",
+    marks: ["1"],
+    email: "186368@zju.edu.cn",
+  },
   { name: "Wencan Jiang", href: "https://github.com/Rinke02", marks: ["1"] },
   {
     name: "Yabiao Wang",
@@ -40,7 +53,7 @@ const authors = [
     marks: ["1"],
   },
   { name: "Ran Yi", href: "https://yiranran.github.io/", marks: ["4"] },
-  { name: "Yong Liu", href: "https://person.zju.edu.cn/yongliu", marks: ["1", "*"] },
+  { name: "Yong Liu", href: "https://person.zju.edu.cn/yongliu", marks: ["1"] },
 ];
 
 const affiliations = [
@@ -51,9 +64,22 @@ const affiliations = [
 ];
 
 const links = {
+  paperLabel: "Paper(Coming Soon)",
   code: "https://github.com/Eddie0521/IAMFlow",
+  codeIcon: "/projects/iamflow/icons8-github-100.png",
   model: "https://huggingface.co/Eddie0521/IAMFlow-FP8",
+  modelIcon: "/projects/iamflow/icons8-hugging-face-100.png",
 };
+
+const navItems = [
+  { label: "Home", href: "#home" },
+  { label: "Highlights", href: "#highlights" },
+  { label: "Demo", href: "#demo" },
+  { label: "Method", href: "#method" },
+  { label: "Benchmark", href: "#benchmark" },
+  { label: "Experiments", href: "#experiments" },
+  { label: "Citation", href: "#citation" },
+];
 
 const highlights = [
   {
@@ -125,6 +151,124 @@ const demoVideos = [
   { name: "Rolling Forcing", src: "/projects/iamflow/demo/rollingforcing.mp4" },
 ];
 
+const resultGroups = [
+  { label: "Visual Quality ↑", columns: ["SC", "BC", "TF", "MS", "VTSS"] },
+  { label: "Temporal Consistency ↑", columns: ["BS", "CAC", "CLC"] },
+  { label: "Instruction Compliance ↑", columns: ["EG", "DT", "VLM"] },
+];
+
+const resultRows: ResultRow[] = [
+  {
+    id: 1,
+    model: "Self Forcing",
+    values: [
+      { value: "80.85" },
+      { value: "82.05" },
+      { value: "86.29" },
+      { value: "56.17" },
+      { value: "30.39" },
+      { value: "60.25" },
+      { value: "50.57" },
+      { value: "39.54" },
+      { value: "55.63" },
+      { value: "51.98" },
+      { value: "50.96" },
+      { value: "56.71" },
+    ],
+  },
+  {
+    id: 2,
+    model: "Rolling Forcing",
+    values: [
+      { value: "88.16" },
+      { value: "85.93" },
+      { value: "80.55" },
+      { value: "41.41" },
+      { value: "52.59" },
+      { value: "61.19", rank: "second" },
+      { value: "68.83" },
+      { value: "62.18" },
+      { value: "58.45" },
+      { value: "56.37" },
+      { value: "52.03" },
+      { value: "63.14" },
+    ],
+  },
+  {
+    id: 3,
+    model: "Deep Forcing",
+    values: [
+      { value: "92.27" },
+      { value: "90.74" },
+      { value: "88.54" },
+      { value: "50.61" },
+      { value: "73.99" },
+      { value: "48.10" },
+      { value: "80.09" },
+      { value: "77.28" },
+      { value: "60.71" },
+      { value: "62.87" },
+      { value: "59.35" },
+      { value: "69.57" },
+    ],
+  },
+  {
+    id: 4,
+    model: "LongLive",
+    values: [
+      { value: "95.36" },
+      { value: "93.32", rank: "second" },
+      { value: "90.27", rank: "second" },
+      { value: "57.76", rank: "second" },
+      { value: "77.29" },
+      { value: "49.19" },
+      { value: "83.06" },
+      { value: "89.97", rank: "second" },
+      { value: "62.40", rank: "best" },
+      { value: "63.33" },
+      { value: "62.22", rank: "second" },
+      { value: "73.17", rank: "second" },
+    ],
+  },
+  {
+    id: 5,
+    model: "MemFlow",
+    values: [
+      { value: "95.37", rank: "second" },
+      { value: "93.21" },
+      { value: "90.23" },
+      { value: "57.37" },
+      { value: "77.67", rank: "best" },
+      { value: "47.06" },
+      { value: "83.92", rank: "second" },
+      { value: "89.71" },
+      { value: "61.93" },
+      { value: "64.14", rank: "second" },
+      { value: "60.85" },
+      { value: "72.88" },
+    ],
+  },
+  {
+    id: 6,
+    model: "IAMFlow",
+    highlighted: true,
+    values: [
+      { value: "95.88", rank: "best" },
+      { value: "93.43", rank: "best" },
+      { value: "90.36", rank: "best" },
+      { value: "59.49", rank: "best" },
+      { value: "77.56", rank: "second" },
+      { value: "65.03", rank: "best" },
+      { value: "86.07", rank: "best" },
+      { value: "91.25", rank: "best" },
+      { value: "62.03", rank: "second" },
+      { value: "64.56", rank: "best" },
+      { value: "62.61", rank: "best" },
+      { value: "75.73", rank: "best" },
+    ],
+  },
+];
+
 const footerLinks = [
   { label: "Personal Website", href: "/" },
   { label: "Paper(Coming Soon)" },
@@ -135,7 +279,12 @@ const footerLinks = [
 const bibtex = "Coming Soon";
 ---
 
-<PaperPageLayout title="IAMFlow" description={description} favicon="/projects/iamflow/icon.png">
+<PaperPageLayout
+  title="IAMFlow"
+  description={description}
+  favicon="/projects/iamflow/icon.png"
+  navItems={navItems}
+>
   <PaperHero
     title={title}
     logos={logos}
@@ -145,7 +294,7 @@ const bibtex = "Coming Soon";
   />
 
   <main>
-    <PaperSection title="Highlights" tight>
+    <PaperSection id="highlights" title="Highlights" tight>
       <div class="highlights-list">
         {
           highlights.map((highlight, index) => (
@@ -172,7 +321,11 @@ const bibtex = "Coming Soon";
       />
     </PaperSection>
 
-    <PaperSection title="Method: IAMFlow" wide>
+    <PaperSection id="demo" title="Demo Videos" wide>
+      <PaperVideoGrid videos={demoVideos} />
+    </PaperSection>
+
+    <PaperSection id="method" title="Method: IAMFlow" wide>
       <h3>Framework of IAMFlow</h3>
       <img
         src={withBase("/projects/iamflow/framework.png")}
@@ -182,7 +335,7 @@ const bibtex = "Coming Soon";
       />
     </PaperSection>
 
-    <PaperSection title="Benchmark: NarraStream-Bench" wide>
+    <PaperSection id="benchmark" title="Benchmark: NarraStream-Bench" wide>
       <h3>Overview of NarraStream-Bench</h3>
       <img
         src={withBase("/projects/iamflow/narrastream-bench.png")}
@@ -199,7 +352,7 @@ const bibtex = "Coming Soon";
       <PaperBenchmarkTable rows={benchmarkRows} />
     </PaperSection>
 
-    <PaperSection title="Experiments" wide>
+    <PaperSection id="experiments" title="Experiments" wide>
       <h3>Qualitative Visualization</h3>
       <img
         src={withBase("/projects/iamflow/qualitative-results.png")}
@@ -209,19 +362,15 @@ const bibtex = "Coming Soon";
       />
 
       <h3>Quantitative Comparison</h3>
-      <img
-        src={withBase("/projects/iamflow/quantitative-comparison.png")}
-        class="paper-image paper-image--narrow"
-        alt="Quantitative comparison of IAMFlow"
-        loading="lazy"
-      />
+      <p class="table-caption">
+        <strong>Quantitative comparison for the multi-prompt 60-second setting on
+        NarraStream-Bench.</strong> Self Forcing, Rolling Forcing, and Deep Forcing are adapted
+        for the experiment. Best results are in bold, and second-best results are underlined.
+      </p>
+      <PaperResultTable groups={resultGroups} overallLabel="Overall ↑" rows={resultRows} />
     </PaperSection>
 
-    <PaperSection title="Demo Videos" wide>
-      <PaperVideoGrid videos={demoVideos} />
-    </PaperSection>
-
-    <PaperSection title="BibTeX">
+    <PaperSection id="citation" title="BibTeX">
       <pre class="bibtex"><code>{bibtex}</code></pre>
     </PaperSection>
 
@@ -230,14 +379,10 @@ const bibtex = "Coming Soon";
 </PaperPageLayout>
 
 <style>
-  :global(.iamflow-logo) {
-    max-width: 330px;
-    max-height: 72px;
-  }
-
-  :global(.narrastream-logo) {
-    max-width: 430px;
-    max-height: 64px;
+  :global(.paper-logo.iamflow-logo) {
+    width: 33.333%;
+    max-width: 320px;
+    max-height: none;
   }
 
   .highlights-list {
@@ -270,15 +415,5 @@ const bibtex = "Coming Soon";
     color: #363636;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.92rem;
-  }
-
-  @media (max-width: 720px) {
-    :global(.iamflow-logo) {
-      max-height: 56px;
-    }
-
-    :global(.narrastream-logo) {
-      max-height: 48px;
-    }
   }
 </style>

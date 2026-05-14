@@ -1,14 +1,15 @@
 ---
 type Props = {
   title: string;
+  id?: string;
   wide?: boolean;
   tight?: boolean;
 };
 
-const { title, wide = false, tight = false } = Astro.props;
+const { title, id, wide = false, tight = false } = Astro.props;
 ---
 
-<section class:list={["paper-section", { "paper-section--tight": tight }]}>
+<section id={id} class:list={["paper-section", { "paper-section--tight": tight }]}>
   <div class:list={["paper-container", { "paper-container--wide": wide }]}>
     <h2>{title}</h2>
     <slot />

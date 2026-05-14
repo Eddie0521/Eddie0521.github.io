@@ -1,5 +1,6 @@
 ---
-import { FileText } from "@lucide/astro";
+import { Mail } from "@lucide/astro";
+import ArxivIcon from "@/components/icons/ArxivIcon.astro";
 import GitHubIcon from "@/components/icons/GitHubIcon.astro";
 import HuggingFaceIcon from "@/components/icons/HuggingFaceIcon.astro";
 import { withBase } from "@/lib/url";
@@ -14,6 +15,7 @@ type Author = {
   name: string;
   href?: string;
   marks?: string[];
+  email?: string;
 };
 
 type Affiliation = {
@@ -25,7 +27,9 @@ type Links = {
   paper?: string;
   paperLabel?: string;
   code?: string;
+  codeIcon?: string;
   model?: string;
+  modelIcon?: string;
 };
 
 type Props = {
@@ -40,7 +44,7 @@ const { title, logos = [], authors = [], affiliations = [], links = {} } = Astro
 const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
 ---
 
-<section class="paper-hero">
+<section id="home" class="paper-hero">
   <div class="paper-container">
     {
       logos.length > 0 && (
@@ -60,6 +64,16 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
             <span>
               {author.href ? <a href={author.href}>{author.name}</a> : author.name}
               {author.marks && author.marks.length > 0 && <sup>{author.marks.join(",")}</sup>}
+              {author.email && (
+                <a
+                  href={`mailto:${author.email}`}
+                  class="author-email"
+                  aria-label={`Email ${author.name}`}
+                  title={author.email}
+                >
+                  <Mail aria-hidden="true" size={14} stroke-width={2} />
+                </a>
+              )}
             </span>
           ))}
         </div>
@@ -83,14 +97,14 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
         links.paper ? (
           <a href={withBase(links.paper)} class="paper-button">
             <span class="paper-button__icon">
-              <FileText aria-hidden="true" size={17} stroke-width={2.2} />
+              <ArxivIcon size={18} />
             </span>
             <span>{paperLabel}</span>
           </a>
         ) : (
           <span class="paper-button paper-button--disabled" aria-disabled="true">
             <span class="paper-button__icon">
-              <FileText aria-hidden="true" size={17} stroke-width={2.2} />
+              <ArxivIcon size={18} />
             </span>
             <span>{paperLabel}</span>
           </span>
@@ -100,7 +114,16 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
         links.code && (
           <a href={links.code} class="paper-button">
             <span class="paper-button__icon">
-              <GitHubIcon size={17} />
+              {links.codeIcon ? (
+                <img
+                  src={withBase(links.codeIcon)}
+                  alt=""
+                  class="paper-button__image-icon"
+                  loading="lazy"
+                />
+              ) : (
+                <GitHubIcon size={17} />
+              )}
             </span>
             <span>Code</span>
           </a>
@@ -110,7 +133,16 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
         links.model && (
           <a href={links.model} class="paper-button">
             <span class="paper-button__icon">
-              <HuggingFaceIcon size={18} />
+              {links.modelIcon ? (
+                <img
+                  src={withBase(links.modelIcon)}
+                  alt=""
+                  class="paper-button__image-icon"
+                  loading="lazy"
+                />
+              ) : (
+                <HuggingFaceIcon size={18} />
+              )}
             </span>
             <span>Model</span>
           </a>
@@ -166,12 +198,32 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
     font-size: 0.68em;
   }
 
+  .author-email {
+    display: inline-flex;
+    margin-left: 4px;
+    color: #6b7280;
+    vertical-align: text-top;
+    transition: color 160ms ease, transform 160ms ease;
+  }
+
+  .author-email:hover {
+    color: #3273dc;
+    transform: translateY(-1px);
+  }
+
   .paper-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
     margin-top: 24px;
+  }
+
+  .paper-button__image-icon {
+    display: block;
+    width: 1.25em;
+    height: 1.25em;
+    object-fit: contain;
   }
 
   @media (max-width: 720px) {
@@ -192,6 +244,10 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
     .paper-authors,
     .paper-affiliations {
       font-size: 1rem;
+    }
+
+    .paper-links {
+      gap: 8px;
     }
   }
 </style>

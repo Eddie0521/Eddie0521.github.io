@@ -770,12 +770,20 @@ h2 {
 
 .site-footer {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   padding: 22px 0 32px;
   color: var(--muted);
   font-size: 0.82rem;
+}
+
+.site-footer__main {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .footer-links {
@@ -803,7 +811,6 @@ h2 {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  margin-left: 2px;
 }
 
 .footer-like__count {
@@ -963,9 +970,6 @@ h2 {
     display: none;
   }
 
-  .site-footer {
-    flex-direction: row;
-  }
 }
 
 @media (max-width: 440px) {

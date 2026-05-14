@@ -13,6 +13,7 @@ import { withBase } from "@/lib/url";
 
 type ProjectLinks = {
   paper?: string;
+  paperLabel?: string;
   code?: string;
   demo?: string;
   video?: string;
@@ -28,14 +29,20 @@ type Props = {
 const { links = {} } = Astro.props;
 
 const linkItems = [
-  { key: "paper", label: "Paper", href: links.paper, icon: FileText },
+  {
+    key: "paper",
+    label: links.paperLabel ?? "Paper",
+    href: links.paper,
+    icon: FileText,
+    disabled: Boolean(links.paperLabel && !links.paper),
+  },
   { key: "code", label: "Code", href: links.code, icon: GitHubIcon },
   { key: "demo", label: "Demo", href: links.demo, icon: MonitorPlay },
   { key: "video", label: "Video", href: links.video, icon: Play },
   { key: "dataset", label: "Dataset", href: links.dataset, icon: Database },
   { key: "model", label: "Model", href: links.model, icon: HuggingFaceIcon },
   { key: "website", label: "Website", href: links.website, icon: Globe },
-].filter((item) => item.href);
+].filter((item) => item.href || item.disabled);
 
 const brandLabels = new Set(["Code", "Model"]);
 ---
@@ -43,17 +50,24 @@ const brandLabels = new Set(["Code", "Model"]);
 {
   linkItems.length > 0 && (
     <div class="project-links" aria-label="Project links">
-      {linkItems.map(({ label, href, icon: Icon }) => (
-        <a href={withBase(href!)} class="project-link">
-          {brandLabels.has(label) ? (
-            <Icon size={17} />
-          ) : (
+      {linkItems.map(({ label, href, icon: Icon, disabled }) =>
+        disabled ? (
+          <span class="project-link project-link--disabled" aria-disabled="true">
             <Icon aria-hidden="true" size={17} stroke-width={1.8} />
-          )}
-          <span>{label}</span>
-          <ExternalLink aria-hidden="true" size={13} stroke-width={1.8} />
-        </a>
-      ))}
+            <span>{label}</span>
+          </span>
+        ) : (
+          <a href={withBase(href!)} class="project-link">
+            {brandLabels.has(label) ? (
+              <Icon size={17} />
+            ) : (
+              <Icon aria-hidden="true" size={17} stroke-width={1.8} />
+            )}
+            <span>{label}</span>
+            <ExternalLink aria-hidden="true" size={13} stroke-width={1.8} />
+          </a>
+        ),
+      )}
     </div>
   )
 }

@@ -446,6 +446,10 @@ h2 {
   transition: color 160ms ease, transform 160ms ease;
 }
 
+.project-row__links span {
+  color: var(--muted);
+}
+
 .project-row__links a:hover {
   color: var(--accent-deep);
 }
@@ -665,6 +669,16 @@ h2 {
 .project-link:hover {
   border-color: rgba(32, 36, 33, 0.3);
   background: var(--surface);
+}
+
+.project-link--disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.project-link--disabled:hover {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.68);
 }
 
 .project-media {

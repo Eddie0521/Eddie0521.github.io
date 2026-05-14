@@ -8,11 +8,15 @@ type Props = {
 
 const { project } = Astro.props;
 const linkItems = [
-  { label: "Paper", href: project.links.paper },
+  {
+    label: project.links.paperLabel ?? "Paper",
+    href: project.links.paper,
+    disabled: Boolean(project.links.paperLabel && !project.links.paper),
+  },
   { label: "Code", href: project.links.code },
   { label: "Demo", href: project.links.demo },
   { label: "Project Page", href: project.href },
-].filter((item): item is { label: string; href: string } => Boolean(item.href));
+].filter((item) => item.href || item.disabled);
 ---
 
 <article class="project-row">
@@ -33,7 +37,11 @@ const linkItems = [
     </h3>
     {project.authors.length > 0 && <p class="project-row__authors">{project.authors.join(", ")}</p>}
     <div class="project-row__links" aria-label={`${project.name} links`}>
-      {linkItems.map(({ label, href }) => <a href={withBase(href)}>[{label}]</a>)}
+      {
+        linkItems.map(({ label, href, disabled }) =>
+          disabled ? <span>[{label}]</span> : <a href={withBase(href!)}>[{label}]</a>,
+        )
+      }
     </div>
   </div>
 </article>

@@ -60,6 +60,7 @@ const blog = defineCollection({
 
 const projectLinkSchema = z.object({
   paper: z.string().optional(),
+  paperLabel: z.string().optional(),
   code: z.string().optional(),
   demo: z.string().optional(),
   video: z.string().optional(),

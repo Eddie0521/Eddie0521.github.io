@@ -85,9 +85,10 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
     {
       affiliations.length > 0 && (
         <div class="paper-affiliations">
-          {affiliations.map((affiliation) => (
+          {affiliations.map((affiliation, index) => (
             <span>
               <sup>{affiliation.mark}</sup>{affiliation.name}
+              {index < affiliations.length - 1 && <span class="affiliation-comma">,</span>}
             </span>
           ))}
         </div>
@@ -201,6 +202,10 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
   }
 
   .author-comma {
+    margin-left: 1px;
+  }
+
+  .affiliation-comma {
     margin-left: 1px;
   }
 

@@ -1,3 +1,8 @@
+- id: "iamflow-neurips2026"
+  date: "2026-09-25"
+  title: "IAMFlow is accepted to NeurIPS 2026!"
+  body: "Advancing Narrative Long Video Generation via Training-Free Identity-Aware Memory is accepted to NeurIPS 2026 as a poster."
+  href: "/projects/iamflow/"
 - id: "iamflow-paper"
   date: "2026-05-13"
   title: "My first paper - Advancing Narrative Long Video Generation via Training-Free Identity-Aware Memory"

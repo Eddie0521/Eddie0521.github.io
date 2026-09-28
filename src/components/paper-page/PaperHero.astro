@@ -34,13 +34,14 @@ type Links = {
 
 type Props = {
   title: string;
+  venue?: string;
   logos?: Logo[];
   authors?: Author[];
   affiliations?: Affiliation[];
   links?: Links;
 };
 
-const { title, logos = [], authors = [], affiliations = [], links = {} } = Astro.props;
+const { title, venue, logos = [], authors = [], affiliations = [], links = {} } = Astro.props;
 const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
 ---
 
@@ -94,6 +95,8 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
         </div>
       )
     }
+
+    {venue && <p class="paper-venue">{venue}</p>}
 
     <div class="paper-links">
       {
@@ -220,6 +223,13 @@ const paperLabel = links.paperLabel ?? "Paper(Coming Soon)";
   .author-email:hover {
     color: #3273dc;
     transform: translateY(-1px);
+  }
+
+  .paper-venue {
+    margin-top: 14px;
+    margin-bottom: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
   }
 
   .paper-links {

@@ -36,6 +36,7 @@ const linkItems = [
       <a href={withBase(project.href)}>{project.title}</a>
     </h3>
     {project.authors.length > 0 && <p class="project-row__authors">{project.authors.join(", ")}</p>}
+    {project.venue && <p class="project-row__venue">{project.venue}</p>}
     <div class="project-row__links" aria-label={`${project.name} links`}>
       {
         linkItems.map(({ label, href, disabled }) =>
